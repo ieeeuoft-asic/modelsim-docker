@@ -91,14 +91,24 @@ RUN apt-get update && apt-get install -y \
     libxtst6:i386 \
     libxi6:i386 \
     # Additional dependencies
+    locales \
     gcc \
     make \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set environment variables
-ENV LANG=C.UTF-8
+
+# Set locale nonsense
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
+
+# Set the environment variable for locales
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
 ENV LC_ALL=C.UTF-8
+
+# Update Path with ModelSim and Quartus Binaries
+ENV PATH="$PATH:/root/intelFPGA_lite/18.1/modelsim_ase/bin"
+ENV PATH="$PATH:/root/intelFPGA_lite/18.1/quartus/bin"
 
 # Default command
 CMD ["/bin/bash"]
